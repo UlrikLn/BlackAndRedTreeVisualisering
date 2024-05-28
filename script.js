@@ -41,7 +41,30 @@ function drawTree(data) {
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(0,40)");
+        .attr("transform", "translate(200,40)");  // Adjust translate values to center the tree
+
+    // Define gradient
+    const defs = svg.append("defs");
+
+    const gradient = defs.append("linearGradient")
+        .attr("id", "link-gradient")
+        .attr("gradientUnits", "userSpaceOnUse")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", width)
+        .attr("y2", height);
+
+    gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#6FDCE3"); // Green color
+
+    gradient.append("stop")
+        .attr("offset", "50%")
+        .attr("stop-color", "#5C88C4"); // Yellow color
+
+    gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#5C2FC2"); // Red color
 
     const root = d3.hierarchy(data);
 
@@ -74,3 +97,4 @@ function drawTree(data) {
         .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name);
 }
+

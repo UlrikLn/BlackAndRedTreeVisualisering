@@ -2,6 +2,24 @@ import RedBlackTree from './RedBlackTree.js';
 
 const tree = new RedBlackTree();
 
+// Function to log messages to the message div
+function logMessage(message) {
+    const messageDiv = document.getElementById('message');
+    const p = document.createElement('p');
+    p.textContent = message;
+    messageDiv.appendChild(p);
+    messageDiv.scrollTop = messageDiv.scrollHeight; // Scroll to the bottom
+}
+
+// Override the console.log method
+(function() {
+    const originalLog = console.log;
+    console.log = function(message) {
+        logMessage(message);
+        originalLog.apply(console, arguments);
+    };
+})();
+
 window.insertNode = function insertNode() {
     const value = parseInt(document.getElementById('value').value);
     if (!isNaN(value)) {
@@ -41,7 +59,7 @@ function drawTree(data) {
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(200,40)");  // Adjust translate values to center the tree
+        .attr("transform", "translate(80,40)");  // Adjust translate values to center the tree
 
     // Define gradient
     const defs = svg.append("defs");

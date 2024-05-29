@@ -51,47 +51,49 @@ function treeToHierarchy(node) {
 }
 
 function drawTree(data) {
-    d3.select("#tree").html("");
-
     const width = 600;
     const height = 400;
-    const svg = d3.select("#tree").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(0,40)");  // Adjust translate values to center the tree
+
+    let svg = d3.select("#tree").select("svg");
+    if (svg.empty()) {
+        svg = d3.select("#tree").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(0,40)");  // Adjust translate values to center the tree
+
+        const defs = svg.append("defs");
+
+        const gradient = defs.append("linearGradient")
+            .attr("id", "link-gradient")
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", width)
+            .attr("y2", height);
+
+        gradient.append("stop")
+            .attr("offset", "0%")
+            .attr("stop-color", "#6FDCE3"); // Green color
+
+        gradient.append("stop")
+            .attr("offset", "50%")
+            .attr("stop-color", "#5C88C4"); // Yellow color
+
+        gradient.append("stop")
+            .attr("offset", "100%")
+            .attr("stop-color", "#5C2FC2"); // Red color
+    } else {
+        svg = svg.select("g");
+    }
 
     const root = d3.hierarchy(data);
-
     const treeLayout = d3.tree().size([width, height - 160]);
     treeLayout(root);
 
-    // Define gradient
-    const defs = svg.append("defs");
-
-    const gradient = defs.append("linearGradient")
-        .attr("id", "link-gradient")
-        .attr("gradientUnits", "userSpaceOnUse")
-        .attr("x1", 0)
-        .attr("y1", 0)
-        .attr("x2", width)
-        .attr("y2", height);
-
-    gradient.append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", "#6FDCE3"); // Green color
-
-    gradient.append("stop")
-        .attr("offset", "50%")
-        .attr("stop-color", "#5C88C4"); // Yellow color
-
-    gradient.append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", "#5C2FC2"); // Red color
-
     // Links
     const link = svg.selectAll('.link')
-        .data(root.links(), d => d.target.data.name);
+        .data(root.links(), d => `${d.source.data.name}-${d.target.data.name}`);
 
     link.enter().append('path')
         .attr('class', 'link')
@@ -129,8 +131,8 @@ function drawTree(data) {
         .attr('r', 10);
 
     nodeEnter.append('text')
-        .attr('dy', -12)
-        .attr('x', d => d.children ? -12 : 12)
+        .attr('dy', 3) // Center the text vertically with the circle
+        .attr('x', d => d.children ? -15 : 15) // Adjust position based on whether it has children
         .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name);
 
@@ -150,5 +152,4 @@ function drawTree(data) {
         .attr('opacity', 0)
         .remove();
 }
-
 

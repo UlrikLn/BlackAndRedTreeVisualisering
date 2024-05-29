@@ -101,6 +101,7 @@ function drawTree(data) {
             .x(d => d.x)
             .y(d => d.y)
         )
+        .attr('stroke', 'url(#link-gradient)')
         .attr('stroke-opacity', 0)
         .transition()
         .duration(750)
@@ -147,9 +148,12 @@ function drawTree(data) {
     nodeUpdate.select('circle')
         .attr('r', 10);
 
+    nodeUpdate.attr('class', d => `node ${d.data.color.toLowerCase()}`);
+
     node.exit().transition()
         .duration(750)
         .attr('opacity', 0)
         .remove();
 }
+
 

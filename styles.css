@@ -13,7 +13,10 @@ h1 {
 #tree {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 10px;
+    width: 100%;
+    height: 500px; /* Adjust as necessary for your layout */
 }
 
 .node {
@@ -33,16 +36,6 @@ h1 {
     fill: none;
     stroke: url(#link-gradient);
     stroke-width: 1.5px;
-}
-
-svg {
-    width: 30%;
-    height: 10%;
-}
-
-defs {
-    width: 0;
-    height: 0;
 }
 
 /* Button Styles */
@@ -79,7 +72,7 @@ input[type="number"] {
     font-size: 16px;
 }
 
-/* message */
+/* Message Styles */
 #message {
     max-height: 200px;
     overflow-y: auto;

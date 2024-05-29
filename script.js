@@ -59,7 +59,12 @@ function drawTree(data) {
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(80,40)");  // Adjust translate values to center the tree
+        .attr("transform", "translate(0,40)");  // Adjust translate values to center the tree
+
+    const root = d3.hierarchy(data);
+
+    const treeLayout = d3.tree().size([width, height - 160]);
+    treeLayout(root);
 
     // Define gradient
     const defs = svg.append("defs");
@@ -84,35 +89,66 @@ function drawTree(data) {
         .attr("offset", "100%")
         .attr("stop-color", "#5C2FC2"); // Red color
 
-    const root = d3.hierarchy(data);
-
-    const treeLayout = d3.tree().size([width, height - 160]);
-    treeLayout(root);
-
     // Links
-    svg.selectAll('.link')
-        .data(root.links())
-        .enter().append('path')
+    const link = svg.selectAll('.link')
+        .data(root.links(), d => d.target.data.name);
+
+    link.enter().append('path')
         .attr('class', 'link')
+        .attr('d', d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y)
+        )
+        .attr('stroke-opacity', 0)
+        .transition()
+        .duration(750)
+        .attr('stroke-opacity', 1);
+
+    link.transition()
+        .duration(750)
         .attr('d', d3.linkVertical()
             .x(d => d.x)
             .y(d => d.y)
         );
 
+    link.exit().transition()
+        .duration(750)
+        .attr('stroke-opacity', 0)
+        .remove();
+
     // Nodes
     const node = svg.selectAll('.node')
-        .data(root.descendants())
-        .enter().append('g')
-        .attr('class', d => `node ${d.data.color.toLowerCase()}`)
-        .attr('transform', d => `translate(${d.x},${d.y})`);
+        .data(root.descendants(), d => d.data.name);
 
-    node.append('circle')
+    const nodeEnter = node.enter().append('g')
+        .attr('class', d => `node ${d.data.color.toLowerCase()}`)
+        .attr('transform', d => `translate(${d.x},${d.y})`)
+        .attr('opacity', 0);
+
+    nodeEnter.append('circle')
         .attr('r', 10);
 
-    node.append('text')
+    nodeEnter.append('text')
         .attr('dy', -12)
         .attr('x', d => d.children ? -12 : 12)
         .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name);
+
+    nodeEnter.transition()
+        .duration(750)
+        .attr('opacity', 1);
+
+    const nodeUpdate = node.transition()
+        .duration(750)
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+
+    nodeUpdate.select('circle')
+        .attr('r', 10);
+
+    node.exit().transition()
+        .duration(750)
+        .attr('opacity', 0)
+        .remove();
 }
+
 

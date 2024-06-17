@@ -41,7 +41,8 @@ class RedBlackTree {
                     currNode.left.parent = currNode;
                     this._insertFixup(currNode.left);
                 }
-            } else if (value > currNode.value) {
+            }
+            else if (value > currNode.value) {
                 if (currNode.right) {
                     console.log(`Traversing right from node ${currNode.value}`);
                     insertHelper(currNode.right);
@@ -52,11 +53,12 @@ class RedBlackTree {
                     this._insertFixup(currNode.right);
                 }
                 // Håndtering af duplikater
-            } else {
+            }
+            else {
                 console.log(`Value ${value} already exists in the tree. No duplicates allowed.`);
             }
         }
-
+        // Hvis der ikke er nogen rod, indsættes den nye knude som rod og laves sort
         if (!this.root) {
             console.log(`Inserting ${value} as the root node.`);
             this.root = new RBTNode(value);

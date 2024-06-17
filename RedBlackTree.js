@@ -186,106 +186,94 @@ class RedBlackTree {
 
     // Fixup funktion for at sikre at rød-sort egenskaberne overholdes efter en sletning
     _deleteFixup(node) {
-        let currNode = node;
+        let currNode = node
 
-        // Mens currNode ikke er roden og currNode er sort
-        // !== tjekker typen og værdien, != tjekker kun værdien
+        // Loop indtil currNode er roden eller currNode er sort
         while (currNode !== this.root && !this._isRed(currNode)) {
-            const { parent } = currNode;
-            let sibling;
+            const { parent } = currNode
+            // Lav en variabel til at holde siblings til currNode
+            // Husk tomme noder er sorte
+            let sibling
 
-            // Hvis currNode er venstre barn af sin forælder
+            // Tjek om currNode er venstre barn af sin forældre
             if (currNode === parent.left) {
-                sibling = parent.right;
+                // Så er søskende højre barn af forældrenode
+                sibling = parent.right
 
-                // Hvis søskende er rød, roter til venstre om forældrenode
+                // Hvis sibling er rød, roter til venstre om forældrenode
                 if (this._isRed(sibling)) {
                     console.log(`Left rotation at parent ${parent.value} because sibling ${sibling.value} is red.`);
-                    this._leftRotation(parent);
-                    // Efter rotation, opdater søskendes farve og forældrens farve
-                    sibling.color = NodeColor.BLACK;
-                    parent.color = NodeColor.RED;
-                    sibling = parent.right; // Opdater søskende efter rotation
+                    this._leftRotation(parent)
                 }
 
-                // Hvis søskende og søskendes børn er sorte
-                if (!this._isRed(sibling.left) && !this._isRed(sibling.right)) {
-                    // Hvis forældrenode er rød, sæt forældrenode til sort og søskende til rød
+                // Hvis begge siblings er sort
+                else if (!this._isRed(sibling.left) && !this._isRed(sibling.right)) {
+                    // Hvis forældrenode er rød, sæt forældrenode til sort og siblings til rød
                     if (this._isRed(parent)) {
                         console.log(`Parent ${parent.value} is red, setting parent to black and sibling ${sibling.value} to red.`);
-                        parent.color = NodeColor.BLACK;
-                        sibling.color = NodeColor.RED;
-                        break;
+                        parent.color = NodeColor.BLACK
+                        sibling.color = NodeColor.RED
+                        break
                     }
-                    // Hvis forældrenode er sort, sæt søskende til rød og flyt opad i træet
+                    // Hvis forældrenode og siblings er sorte, sæt siblings til rød og fortsæt op i træet
                     console.log(`Sibling ${sibling.value} and parent ${parent.value} are black, moving up the tree.`);
-                    sibling.color = NodeColor.RED;
-                    currNode = parent; // Flyt opad i træet
-                    // Hvis søskendes venstre barn er rødt og højre barn er sort
-                } else if (this._isRed(sibling.left) && !this._isRed(sibling.right)) {
+                    sibling.color = NodeColor.RED
+                    currNode = parent
+                }
+
+                // Hvis sibling til venstre er rød og sibling til højre er sort
+                else if (this._isRed(sibling.left) && !this._isRed(sibling.right)) {
+                    // Roter til højre om sibling
                     console.log(`Right rotation at sibling ${sibling.value} because left child is red.`);
-                    this._rightRotation(sibling);
-                    // Efter rotation, opdater farverne
-                    sibling.left.color = NodeColor.BLACK;
-                    sibling.color = NodeColor.RED;
-                    sibling = parent.right; // Opdater søskende efter rotation
-                } else {
-                    // Hvis søskendes højre barn er rødt
+                    this._rightRotation(sibling)
+                }
+                else {
+                    // Roter til venstre om forældrenode, sæt forældrenode til sort og siblings højre barn til sort
                     console.log(`Left rotation at parent ${parent.value}, setting parent to black and sibling's right child to black.`);
-                    sibling.color = parent.color;
-                    parent.color = NodeColor.BLACK;
-                    sibling.right.color = NodeColor.BLACK;
-                    this._leftRotation(parent);
-                    currNode = this.root; // Bryd løkken ved at sætte currNode til roden
-                }
-            } else {
-                // Hvis currNode er højre barn af sin forælder
-                sibling = parent.left;
-
-                // Hvis søskende er rød, roter til højre om forældrenode
-                if (this._isRed(sibling)) {
-                    console.log(`Right rotation at parent ${parent.value} because sibling ${sibling.value} is red.`);
-                    this._rightRotation(parent);
-                    // Efter rotation, opdater søskendes farve og forældrens farve
-                    sibling.color = NodeColor.BLACK;
-                    parent.color = NodeColor.RED;
-                    sibling = parent.left; // Opdater søskende efter rotation
-                }
-
-                // Hvis søskende og søskendes børn er sorte
-                if (!this._isRed(sibling.left) && !this._isRed(sibling.right)) {
-                    // Hvis forældrenode er rød, sæt forældrenode til sort og søskende til rød
-                    if (this._isRed(parent)) {
-                        console.log(`Parent ${parent.value} is red, setting parent to black and sibling ${sibling.value} to red.`);
-                        parent.color = NodeColor.BLACK;
-                        sibling.color = NodeColor.RED;
-                        break;
-                    }
-                    // Hvis forældrenode er sort, sæt søskende til rød og flyt opad i træet
-                    console.log(`Sibling ${sibling.value} and parent ${parent.value} are black, moving up the tree.`);
-                    sibling.color = NodeColor.RED;
-                    currNode = parent; // Flyt opad i træet
-                    // Hvis søskendes højre barn er rødt og venstre barn er sort
-                } else if (this._isRed(sibling.right) && !this._isRed(sibling.left)) {
-                    console.log(`Left rotation at sibling ${sibling.value} because right child is red.`);
-                    this._leftRotation(sibling);
-                    // Efter rotation, opdater farverne
-                    sibling.right.color = NodeColor.BLACK;
-                    sibling.color = NodeColor.RED;
-                    sibling = parent.left; // Opdater søskende efter rotation
-                } else {
-                    // Hvis søskendes venstre barn er rødt
-                    console.log(`Right rotation at parent ${parent.value}, setting parent to black and sibling's left child to black.`);
-                    sibling.color = parent.color;
-                    parent.color = NodeColor.BLACK;
-                    sibling.left.color = NodeColor.BLACK;
-                    this._rightRotation(parent);
-                    currNode = this.root; // Bryd løkken ved at sætte currNode til roden
+                    this._leftRotation(parent)
+                    parent.color = NodeColor.BLACK
+                    sibling.right.color = NodeColor.BLACK
+                    break
                 }
             }
+                else {
+                    // Hvis currNode er højre barn af sin forældre
+                    // sæt sibling til venstre barn af forældrenode
+                    sibling = parent.left
+                    // Hvis sibling er rød, roter til højre om forældrenode
+                    if (this._isRed(sibling)) {
+                        console.log(`Right rotation at parent ${parent.value} because sibling ${sibling.value} is red.`);
+                        this._rightRotation(parent)
+                    }
+                    // Hvis begge siblings er sorte
+                    else if (!this._isRed(sibling.left) && !this._isRed(sibling.right)) {
+                        // Hvis forældrenode er rød, sæt forældrenode til sort og siblings til rød
+                        if (this._isRed(parent)) {
+                            console.log(`Parent ${parent.value} is red, setting parent to black and sibling ${sibling.value} to red.`);
+                            parent.color = NodeColor.BLACK
+                            sibling.color = NodeColor.RED
+                            break
+                        }
+                        // Hvis forældrenode og siblings er sorte, sæt siblings til rød og fortsæt op i træet
+                        console.log(`Sibling ${sibling.value} and parent ${parent.value} are black, moving up the tree.`);
+                        sibling.color = NodeColor.RED
+                        currNode = parent
+                    }
+                    // Hvis sibling til venstre er rød og sibling til højre er sort
+                    else if (this._isRed(sibling.right) && !this._isRed(sibling.left)) {
+                        // Roter til venstre om sibling
+                        console.log(`Left rotation at sibling ${sibling.value} because right child is red.`);
+                        this._leftRotation(sibling)
+                    } else {
+                        // Roter til højre om forældrenode, sæt forældrenode til sort og siblings venstre barn til sort
+                        console.log(`Right rotation at parent ${parent.value}, setting parent to black and sibling's left child to black.`);
+                        this._rightRotation(parent)
+                        parent.color = NodeColor.BLACK
+                        sibling.left.color = NodeColor.BLACK
+                        break
+                    }
+            }
         }
-        // Sørg for, at currNode er sort (især vigtigt hvis currNode er roden)
-        currNode.color = NodeColor.BLACK;
         console.log(`Finishing _deleteFixup with currNode: ${currNode.value}`);
     }
 

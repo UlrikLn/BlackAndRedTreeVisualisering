@@ -12,7 +12,7 @@ function logMessage(message) {
     messageDiv.scrollTop = messageDiv.scrollHeight; // Scroll to the bottom
 }
 
-// Override the console.log method
+// Override console.log metoden for at få den vist på hjemmesiden
 (function() {
     const originalLog = console.log;
     console.log = function(message) {

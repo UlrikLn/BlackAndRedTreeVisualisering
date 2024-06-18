@@ -97,12 +97,12 @@ class RedBlackTree {
                         this._leftRotation(parent);
                         currNode = parent;
                     }
-                    // Roter til højre om bedsteforældrenode
+                    // Roter til højre om bedsteforældrene
                     console.log(`Performing right rotation on grandparent ${grandparent.value}.`);
                     this._rightRotation(grandparent);
                 }
             } else {
-                // Hvis forældrenode er højre barn af bedsteforældrenode
+                // Hvis forældrenode er højre barn af bedsteforældrene
                 const uncle = grandparent.left;
                 // Hvis onkel er rød, flip farven
                 if (this._isRed(uncle)) {
@@ -116,12 +116,12 @@ class RedBlackTree {
                         this._rightRotation(parent);
                         currNode = parent;
                     }
-                    // Roter til venstre om bedsteforældrenode
+                    // Roter til venstre om bedsteforældrene
                     console.log(`Performing left rotation on grandparent ${grandparent.value}.`);
                     this._leftRotation(grandparent);
                 }
             }
-            // Opdater current node til bedsteforældrenode, for at forsætte op i træet og fikse ydeligere problemer
+            // Opdater current node til bedsteforældrene, for at forsætte op i træet og fikse ydeligere problemer
             currNode = grandparent;
         }
         // Til sidst Sørg for, at roden altid er sort

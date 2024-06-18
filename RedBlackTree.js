@@ -28,6 +28,7 @@ class RedBlackTree {
         // Efter kaldes insertFixup for at sikre at træet overholder rød-sort egenskaberne
         const insertHelper = (node) => {
             const currNode = node;
+            // Hvis værdien er mindre end værdien af current node, gå til venstre
             if (value < currNode.value) {
                 // Hvis current node har en venstre knude, gå til venstre
                 if (currNode.left) {
@@ -42,6 +43,7 @@ class RedBlackTree {
                     this._insertFixup(currNode.left);
                 }
             }
+            // Hvis værdien er større end værdien af current node, gå til højre
             else if (value > currNode.value) {
                 if (currNode.right) {
                     console.log(`Traversing right from node ${currNode.value}`);
@@ -64,6 +66,7 @@ class RedBlackTree {
             this.root = new RBTNode(value);
             this.root.color = NodeColor.BLACK; // Sørge for at roden altid er sort
         } else {
+            // Hvis der er en rod, kald hjælpefunktionen til at indsætte den nye knude
             console.log(`Starting insertion of ${value}`);
             insertHelper(this.root);
         }
@@ -122,12 +125,14 @@ class RedBlackTree {
             currNode = grandparent;
         }
         // Til sidst Sørg for, at roden altid er sort
-        console.log(`Setting root color to black.`);
-        this.root.color = NodeColor.BLACK;
+        if (this.root.color !== NodeColor.BLACK) {
+            console.log(`Setting root color to black.`);
+            this.root.color = NodeColor.BLACK;
+        }
     }
 
     // Denne funktion sletter en værdi fra træet. Den håndterer tilfælde,
-    // hvor den slettede knude er en leafnode, har et enkelt barn, eller har to børn.
+    // hvor den slettede knude er en node, der har et enkelt barn, eller har to børn.
     delete(value, node = this.root) {
         console.log(`Attempting to delete value ${value}`);
 
@@ -178,7 +183,7 @@ class RedBlackTree {
             console.log(`In-order successor is ${aux.value}`);
             // erstat værdien af targetNode med værdien af in-order successor
             targetNode.value = aux.value;
-            // Slet in-order successor fra højre subtræ
+            // Slet in-order successor fra højre subtræ, kalder rekursivt delete for at sikre at hvis den har børn, bliver de håndteret korrekt
             this.delete(aux.value, targetNode.right);
         }
 
